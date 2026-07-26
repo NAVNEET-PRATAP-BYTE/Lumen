@@ -21,6 +21,9 @@ Thumbs.db
 .idea/
 .vscode/
 
+# Documentation & Project Files
+MD/
+
 # Logs
 *.log
 npm-debug.log*
