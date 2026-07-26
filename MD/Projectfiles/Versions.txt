@@ -1,0 +1,241 @@
+# Package Versions
+## P2P File Share — Exact Dependency Versions
+
+**Version:** 1.0.0  
+**Last Updated:** 2026-07-15  
+**Lock Strategy:** Pin exact versions for reproducible builds
+
+---
+
+## Frontend Dependencies (`package.json`)
+
+```json
+{
+  "name": "p2p-file-share",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest",
+    "test:ui": "vitest --ui",
+    "test:coverage": "vitest --coverage",
+    "format": "prettier --write \"**/*.{ts,tsx,js,json,md}\"",
+    "check": "npm run lint && npm run typecheck && npm run test"
+  },
+  "dependencies": {
+    "next": "14.2.18",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "typescript": "5.6.3",
+    "zustand": "5.0.2",
+    "framer-motion": "11.15.0",
+    "gsap": "3.12.5",
+    "qrcode.react": "3.1.0",
+    "lucide-react": "0.469.0",
+    "js-file-download": "0.4.12",
+    "class-variance-authority": "0.7.1",
+    "clsx": "2.1.1",
+    "tailwind-merge": "2.6.0"
+  },
+  "devDependencies": {
+    "@types/node": "22.10.2",
+    "@types/react": "18.3.12",
+    "@types/react-dom": "18.3.1",
+    "@types/ws": "8.5.13",
+    "autoprefixer": "10.4.20",
+    "eslint": "8.57.1",
+    "eslint-config-next": "14.2.18",
+    "postcss": "8.4.49",
+    "prettier": "3.4.2",
+    "tailwindcss": "3.4.17",
+    "typescript": "5.6.3",
+    "vitest": "2.1.8",
+    "@testing-library/react": "16.1.0",
+    "@testing-library/jest-dom": "6.6.3",
+    "@vitejs/plugin-react": "4.3.4",
+    "jsdom": "25.0.1",
+    "@vitest/coverage-v8": "2.1.8"
+  }
+}
+```
+
+---
+
+## Signaling Server Dependencies (`server/package.json`)
+
+```json
+{
+  "name": "p2p-file-share-signaling",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "start": "node dist/index.js",
+    "build": "tsc",
+    "lint": "eslint src/**/*.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "ws": "8.18.0",
+    "@upstash/redis": "1.34.0"
+  },
+  "devDependencies": {
+    "@types/ws": "8.5.13",
+    "@types/node": "22.10.2",
+    "typescript": "5.6.3",
+    "tsx": "4.19.2",
+    "eslint": "8.57.1",
+    "@typescript-eslint/eslint-plugin": "8.13.5",
+    "@typescript-eslint/parser": "8.13.5"
+  }
+}
+```
+
+---
+
+## Version Rationale
+
+| Package | Version | Why This Version |
+|---------|---------|------------------|
+| `next` | 14.2.18 | Latest stable Next.js 14 with App Router |
+| `react` / `react-dom` | 18.3.1 | Stable React 18, compatible with Next.js 14 |
+| `typescript` | 5.6.3 | Latest TypeScript with strictest checks |
+| `zustand` | 5.0.2 | Lightweight state management, v5 is stable |
+| `framer-motion` | 11.15.0 | Latest stable, good React 18 support |
+| `gsap` | 3.12.5 | Industry standard for SVG animations |
+| `qrcode.react` | 3.1.0 | Client-side QR generation, no server needed |
+| `lucide-react` | 0.469.0 | Tree-shakeable icons, consistent design |
+| `ws` | 8.18.0 | Lightweight WebSocket library, stable |
+| `@upstash/redis` | 1.34.0 | Official Upstash Redis client, supports pub/sub |
+
+---
+
+## Installation Commands
+
+### Frontend
+
+```bash
+# Create Next.js app (if starting from scratch)
+npx create-next-app@latest p2p-file-share --typescript --tailwind --eslint --app --no-src-dir --import-alias "@/*"
+
+cd p2p-file-share
+
+# Install dependencies with exact versions
+npm install next@14.2.18 react@18.3.1 react-dom@18.3.1
+npm install zustand@5.0.2 framer-motion@11.15.0 gsap@3.12.5 qrcode.react@3.1.0 lucide-react@0.469.0 js-file-download@0.4.12 class-variance-authority@0.7.1 clsx@2.1.1 tailwind-merge@2.6.0
+
+# Install dev dependencies
+npm install -D @types/node@22.10.2 @types/react@18.3.12 @types/react-dom@18.3.1
+npm install -D eslint@8.57.1 eslint-config-next@14.2.18 prettier@3.4.2 tailwindcss@3.4.17 postcss@8.4.49 autoprefixer@10.4.20
+npm install -D vitest@2.1.8 @testing-library/react@16.1.0 @testing-library/jest-dom@6.6.3 @vitejs/plugin-react@4.3.4 jsdom@25.0.1 @vitest/coverage-v8@2.1.8
+```
+
+### Signaling Server
+
+```bash
+mkdir server && cd server
+npm init -y
+
+# Install dependencies
+npm install ws@8.18.0 @upstash/redis@1.34.0
+
+# Install dev dependencies
+npm install -D @types/ws@8.5.13 @types/node@22.10.2 typescript@5.6.3 tsx@4.19.2
+npm install -D eslint@8.57.1 @typescript-eslint/eslint-plugin@8.13.5 @typescript-eslint/parser@8.13.5
+```
+
+---
+
+## Lock Files
+
+- **Frontend:** Use `package-lock.json` (npm) or `yarn.lock` (Yarn). Commit the lock file to Git.
+- **Server:** Use `package-lock.json`. Commit to Git.
+
+**CI/CD should use:**
+```bash
+npm ci  # Instead of npm install — uses lock file for exact versions
+```
+
+---
+
+## Node.js Version
+
+| Environment | Version | `.nvmrc` |
+|-------------|---------|----------|
+| Development | 20.18.0 | `20` |
+| Production (Vercel) | 20.x | N/A |
+| Production (Railway) | 20.x | N/A |
+
+Create `.nvmrc` in project root:
+```
+20
+```
+
+Create `.node-version` in `server/`:
+```
+20
+```
+
+---
+
+## Browser Support Versions
+
+| Browser | Minimum Version | Release Date | Market Share (2026 est.) |
+|---------|----------------|--------------|--------------------------|
+| Chrome | 120 | Dec 2023 | 65% |
+| Firefox | 120 | Dec 2023 | 5% |
+| Safari | 17 | Sep 2023 | 18% |
+| Edge | 120 | Dec 2023 | 5% |
+| Opera | 105 | Dec 2023 | 2% |
+
+**Total supported:** ~95% of global browser market
+
+---
+
+## OS / Tooling Versions
+
+| Tool | Version | Purpose |
+|------|---------|---------|
+| Node.js | 20.18.0+ | Runtime |
+| npm | 10.x | Package manager |
+| Git | 2.43.0+ | Version control |
+| VS Code | 1.92.0+ | IDE (recommended) |
+| Chrome | 120+ | Primary testing browser |
+| Redis (Upstash) | N/A | Managed Redis (free tier) |
+
+---
+
+## CI/CD Versions
+
+```yaml
+# .github/workflows/ci.yml
+jobs:
+  lint-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      - run: npm ci
+      - run: npm run check
+```
+
+---
+
+## Update Policy
+
+| Dependency Type | Update Frequency | Method |
+|-----------------|------------------|--------|
+| Production dependencies | Monthly | `npm outdated` → `npm update` |
+| Dev dependencies | Monthly | `npm outdated -D` → `npm update -D` |
+| Security patches | Immediately | `npm audit fix` |
+| Major versions | Quarterly review | Test in feature branch before merging |
+
+**Rule:** Never update all dependencies at once. Update one major version at a time and test thoroughly.

@@ -1,0 +1,48 @@
+{
+  "name": "p2p-lumen",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "format": "prettier --write \"**/*.{ts,tsx,js,json,md}\""
+  },
+  "dependencies": {
+    "next": "14.2.18",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "typescript": "5.6.3",
+    "zustand": "5.0.2",
+    "framer-motion": "11.15.0",
+    "gsap": "3.12.5",
+    "qrcode.react": "3.1.0",
+    "lucide-react": "0.469.0",
+    "js-file-download": "0.4.12",
+    "class-variance-authority": "0.7.1",
+    "clsx": "2.1.1",
+    "tailwind-merge": "2.6.0"
+  },
+  "devDependencies": {
+    "@types/node": "22.10.2",
+    "@types/react": "18.3.12",
+    "@types/react-dom": "18.3.1",
+    "autoprefixer": "10.4.20",
+    "eslint": "8.57.1",
+    "eslint-config-next": "14.2.18",
+    "postcss": "8.4.49",
+    "prettier": "3.4.2",
+    "tailwindcss": "3.4.17",
+    "vitest": "2.1.8",
+    "@testing-library/react": "16.1.0",
+    "@testing-library/jest-dom": "6.6.3",
+    "@vitejs/plugin-react": "4.3.4",
+    "jsdom": "25.0.1",
+    "@vitest/coverage-v8": "2.1.8"
+  }
+}
