@@ -24,6 +24,8 @@ export function useSignaling({
   const reconnectCountRef = useRef(0);
   const reconnectTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  const normalizedRoomCode = roomCode ? roomCode.trim().toUpperCase() : null;
+
   // Keep callbacks in refs so they never re-trigger the connect effect
   const onPeersListRef = useRef(onPeersList);
   const onUserJoinedRef = useRef(onUserJoined);
@@ -35,7 +37,7 @@ export function useSignaling({
   useEffect(() => { onUserLeftRef.current = onUserLeft; });
   useEffect(() => { onSignalReceivedRef.current = onSignalReceived; });
 
-  const { peerId, displayName, setSignalingConnected } = useRoomStore();
+  const { peerId, displayName, setSignalingConnected, setStatus } = useRoomStore();
 
   // Store peerId & displayName in refs so they don't cause re-connection
   const peerIdRef = useRef(peerId);
@@ -52,7 +54,7 @@ export function useSignaling({
   }, []);
 
   const connect = useCallback(() => {
-    if (!roomCode) return;
+    if (!normalizedRoomCode) return;
 
     if (reconnectTimerRef.current) {
       clearTimeout(reconnectTimerRef.current);
@@ -73,10 +75,11 @@ export function useSignaling({
     ws.onopen = () => {
       console.log('[signaling] Connected');
       setSignalingConnected(true);
+      setStatus('active');
       reconnectCountRef.current = 0;
       sendJson({
         type: 'join',
-        roomCode,
+        roomCode: normalizedRoomCode,
         peerId: peerIdRef.current,
         displayName: displayNameRef.current,
       });
@@ -108,6 +111,7 @@ export function useSignaling({
             break;
           case 'error':
             console.error('[signaling] Server error:', msg.message);
+            setStatus('error');
             break;
         }
       } catch (err) {
@@ -129,15 +133,16 @@ export function useSignaling({
         reconnectTimerRef.current = setTimeout(() => connect(), delay);
       } else {
         console.error('[signaling] Max reconnect attempts reached');
+        setStatus('error');
       }
     };
 
     ws.onerror = () => {
       console.error('[signaling] WebSocket error');
+      setStatus('error');
     };
-  // Only reconnect when the roomCode changes — NOT on callback changes
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [roomCode, sendJson, setSignalingConnected]);
+  }, [normalizedRoomCode, sendJson, setSignalingConnected, setStatus]);
 
   const disconnect = useCallback(() => {
     if (reconnectTimerRef.current) {
@@ -148,31 +153,30 @@ export function useSignaling({
 
     if (wsRef.current) {
       if (wsRef.current.readyState === WebSocket.OPEN) {
-        sendJson({ type: 'leave', roomCode: roomCode ?? '', peerId: peerIdRef.current });
+        sendJson({ type: 'leave', roomCode: normalizedRoomCode ?? '', peerId: peerIdRef.current });
       }
       wsRef.current.close();
       wsRef.current = null;
     }
     setSignalingConnected(false);
-  }, [roomCode, sendJson, setSignalingConnected]);
+  }, [normalizedRoomCode, sendJson, setSignalingConnected]);
 
   useEffect(() => {
     connect();
     return () => { disconnect(); };
-  // Only run when connect/disconnect functions change (i.e. when roomCode changes)
   }, [connect, disconnect]);
 
   const sendSignal = useCallback(
     (to: string, signal: Record<string, unknown>) => {
       sendJson({
         type: 'signal',
-        roomCode: roomCode ?? '',
+        roomCode: normalizedRoomCode ?? '',
         from: peerIdRef.current,
         to,
         signal,
       });
     },
-    [roomCode, sendJson]
+    [normalizedRoomCode, sendJson]
   );
 
   return { sendSignal, disconnect, reconnect: connect };

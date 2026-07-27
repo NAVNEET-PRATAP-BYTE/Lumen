@@ -242,7 +242,7 @@ async function handleLeave(ws: WebSocket): Promise<void> {
 
 function handleSignal(ws: WebSocket, msg: Record<string, unknown>): void {
   const meta = socketMeta.get(ws);
-  const roomCode = msg['roomCode'] as string | undefined;
+  const roomCode = (msg['roomCode'] as string | undefined)?.trim().toUpperCase();
 
   if (!meta || meta.roomCode !== roomCode) {
     sendError(ws, 'Not in this room');

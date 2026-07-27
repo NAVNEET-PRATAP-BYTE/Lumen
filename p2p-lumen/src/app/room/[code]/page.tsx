@@ -31,6 +31,11 @@ function RoomContent() {
     <div className="grid gap-4 lg:grid-cols-[1fr_320px]">
       {/* Left column: main content */}
       <div className="flex flex-col gap-4">
+        {/* On mobile and tablet (< lg screens), display Peers at the top */}
+        <div className="block lg:hidden">
+          <PeerList />
+        </div>
+
         <ConnectionStatus />
         <FileTable />
 
@@ -66,9 +71,12 @@ function RoomContent() {
         </section>
       </div>
 
-      {/* Right column: peers + graph */}
+      {/* Right column (desktop): peers + graph */}
       <div className="flex flex-col gap-4">
-        <PeerList />
+        {/* On desktop (>= lg screens), display PeerList in sidebar */}
+        <div className="hidden lg:block">
+          <PeerList />
+        </div>
         <NetworkGraph />
       </div>
     </div>
@@ -80,7 +88,8 @@ function RoomContent() {
 export default function RoomPage() {
   const params = useParams();
   const router = useRouter();
-  const code = Array.isArray(params['code']) ? params['code'][0] : params['code'];
+  const rawCode = Array.isArray(params['code']) ? params['code'][0] : params['code'];
+  const code = rawCode ? rawCode.toUpperCase() : '';
 
   const { setRoomCode, setStatus, reset } = useRoomStore();
 
@@ -89,7 +98,7 @@ export default function RoomPage() {
       router.replace('/');
       return;
     }
-    setRoomCode(code.toUpperCase());
+    setRoomCode(code);
     setStatus('joining');
   }, [code, setRoomCode, setStatus, router]);
 
