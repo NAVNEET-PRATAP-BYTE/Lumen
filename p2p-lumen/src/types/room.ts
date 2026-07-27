@@ -1,13 +1,5 @@
 // ─── Room & Peer Types ───────────────────────────────────────────────────────
 
-export interface Room {
-  code: string;
-  createdAt: number;
-  createdBy: string;
-  maxPeers: number;
-  peerIds: string[];
-}
-
 export interface Peer {
   peerId: string;
   displayName: string;
@@ -16,19 +8,17 @@ export interface Peer {
   joinedAt: number;
 }
 
-// ─── File Transfer Types ─────────────────────────────────────────────────────
-
 export type FileTransferStatus =
   | 'idle'
+  | 'pending'       // receiver: offer received, waiting for user action
   | 'preparing'
-  | 'compressing'
-  | 'encrypting'
   | 'transmitting'
+  | 'paused'        // receiver paused mid-download
   | 'complete'
+  | 'cancelled'
   | 'error';
 
 export interface FileEntry {
-  /** Unique file transfer session ID */
   id: string;
   fileName: string;
   fileSize: number;
@@ -36,13 +26,9 @@ export interface FileEntry {
   senderId: string;
   senderName: string;
   status: FileTransferStatus;
-  /** 0–100 percentage */
   progress: number;
   chunkCount?: number;
-  receivedChunks?: number;
   direction: 'send' | 'receive';
-  /** Timestamp when transfer started */
   startedAt?: number;
-  /** Timestamp when transfer completed */
   completedAt?: number;
 }

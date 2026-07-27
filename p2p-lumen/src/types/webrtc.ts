@@ -1,54 +1,18 @@
 import { FileTransferStatus } from './room';
 
-// ─── WebRTC Configuration ────────────────────────────────────────────────────
-
-export interface WebRTCConfig {
-  iceServers: RTCIceServer[];
-  iceTransportPolicy?: RTCIceTransportPolicy;
-  iceCandidatePoolSize?: number;
-}
-
-// ─── DataChannel Message Protocol ────────────────────────────────────────────
-
-/** Sent over the DataChannel as JSON (except chunk encryptedData which is base64) */
 export type DataChannelMessage =
-  | {
-      type: 'key-exchange';
-      /** Base64-encoded ECDH P-384 public key (raw format) */
-      publicKey: string;
-    }
-  | {
-      type: 'file-meta';
-      fileId: string;
-      fileName: string;
-      fileSize: number;
-      fileType: string;
-      senderId: string;
-      senderName: string;
-      chunkCount: number;
-    }
-  | {
-      type: 'chunk';
-      fileId: string;
-      chunkIndex: number;
-      /** Base64-encoded 12-byte IV */
-      iv: string;
-      /** Base64-encoded encrypted+compressed chunk data */
-      encryptedData: string;
-      totalChunks: number;
-    }
-  | {
-      type: 'complete';
-      fileId: string;
-      totalChunks: number;
-    }
-  | {
-      type: 'error';
-      fileId: string;
-      message: string;
-    };
-
-// ─── Transfer Session (in-memory state) ──────────────────────────────────────
+  | { type: 'key-exchange'; publicKey: string }
+  // Phase 1 – sender broadcasts metadata only (no data yet)
+  | { type: 'file-offer'; fileId: string; fileName: string; fileSize: number; fileType: string; senderId: string; senderName: string; chunkCount: number }
+  // Phase 2 – receiver decides
+  | { type: 'download-accept';  fileId: string }
+  | { type: 'download-pause';   fileId: string }
+  | { type: 'download-resume';  fileId: string }
+  | { type: 'download-cancel';  fileId: string }
+  // Phase 3 – sender streams encrypted chunks
+  | { type: 'chunk'; fileId: string; chunkIndex: number; iv: string; encryptedData: string; totalChunks: number }
+  | { type: 'complete'; fileId: string; totalChunks: number }
+  | { type: 'error'; fileId: string; message: string };
 
 export interface TransferSession {
   fileId: string;
